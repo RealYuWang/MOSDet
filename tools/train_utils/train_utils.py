@@ -30,7 +30,6 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
 
     end = time.time()
 
-    skip_count = 0
     for cur_it in range(start_it, total_it_each_epoch): # 训练集大小 / batch_size = total_it_each_epoch
         try:
             batch = next(dataloader_iter)
@@ -39,14 +38,10 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
             batch = next(dataloader_iter)
             print('new iters')
 
-        coords = batch['voxel_coords']
-        batch_size = np.max(coords[:, 0]) + 1
-        if batch_size < 16:
-            print(batch_size)
-            print(coords)
-            print(batch.keys())
-            skip_count += 1
-            continue
+        # coords = batch['voxel_coords']
+        # batch_size = np.max(coords[:, 0]) + 1
+        # if batch_size < 16:
+        #     continue
 
         data_timer = time.time()
         cur_data_time = data_timer - end
@@ -151,7 +146,6 @@ def train_one_epoch(model, optimizer, train_loader, model_func, lr_scheduler, ac
                 )
                 logger.info(f'Save latest model to {ckpt_name}')
                 ckpt_save_cnt += 1
-    print(f"Epoch finished, skip count: {skip_count}")
     if rank == 0:
         pbar.close()
     return accumulated_iter
